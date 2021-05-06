@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+	    	http://www.springframework.org/schema/beans     
+        	http://www.springframework.org/schema/beans/spring-beans.xsd
+        	http://www.springframework.org/schema/mvc
+        	http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        	http://www.springframework.org/schema/tx
+        	http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+        	http://www.springframework.org/schema/context 
+        	http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<context:component-scan
+		base-package="com.coursenet03">
+	</context:component-scan>
+
+	<mvc:annotation-driven></mvc:annotation-driven>
+
+	<!-- prefix itu awalan untuk pilih folder ke file, suffix untuk akhiran 
+		biasanya format file -->
+
+	<!-- <bean id="viewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver"> 
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"></property> 
+		<property name="prefix" value="/WEB-INF/jsp/"></property> <property name="suffix" 
+		value=".jsp"></property> </bean> -->
+
+	<bean id="templateResolver1"
+		class="org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver">
+		<property name="prefix" value="/WEB-INF/jsp/"></property>
+		<property name="suffix" value=".jsp"></property>
+	</bean>
+
+	<bean id="templateEngine1"
+		class="org.thymeleaf.spring5.SpringTemplateEngine">
+		<property name="templateResolver" ref="templateResolver1"></property>
+	</bean>
+
+	<bean id="viewResolver"
+		class="org.thymeleaf.spring5.view.ThymeleafViewResolver">
+		<property name="templateEngine" ref="templateEngine1"></property>
+	</bean>
+	
+	<bean id="ds"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName"
+			value="com.mysql.jdbc.Driver">
+			<!-- value="org.postgresql.Driver" -->
+		</property>
+		<property name="url"
+			value="jdbc:mysql://localhost:3306/namadatabase">
+			<!-- jdbc:postgresql://localhost:5740/webspring -->
+		</property>
+		<property name="username" value="root"></property>
+		<property name="password" value=""></property>
+	</bean>
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="dataSource" ref="ds"></property>
+		<property name="packagesToScan" value="com.coursenet03.model">
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">
+					org.hibernate.dialect.MySQL5InnoDBDialect
+				</prop>
+				<!-- show_sql set jadi false kalo udah selesai development -->
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<!-- org.hibernate.dialect.PostgreSQLDialect -->
+				<!--  ddl : data definition language : create table -->
+			</props>
+		</property>
+
+	</bean>
+
+	<bean id="tm"
+		class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory">
+		</property>
+	</bean>
+	
+	<tx:annotation-driven transaction-manager="tm"/>
+
+	
+
+</beans>
+
+<!-- 	<bean id="ds"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName"
+			value="com.mysql.jdbc.Driver"></property>
+		<property name="url"
+			value="jdbc:mysql://localhost:3306/namadatabase"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value=""></property>
+	</bean>
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="dataSource" ref="ds"></property>
+		<property name="packagesToScan" value="com.coursenet03.model"></property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
+				show_sql set jadi false kalo udah selesai development
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.hbm2dll.auto">create</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="tm" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<tx:annotation-driven transaction-manager="tm"/>
+
+</beans> -->
